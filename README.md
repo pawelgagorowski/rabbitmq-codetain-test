@@ -20,3 +20,5 @@ node/nodemon publisher.js [routing key 1] [routing key 2] [routing key 3]
 node/nodemon consumer.js [binding key 1] [binding key 2] [binding key 3]
 
 ```
+
+Try to run many consumers
