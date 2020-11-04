@@ -3,11 +3,11 @@
 const amqp = require('amqplib/callback_api');
 const args = process.argv.slice(2);
 
-amqp.connect('amqp://localhost', function(error0, connection) {
+amqp.connect('amqp://localhost', (error0, connection) => {
     if (error0) {
         throw error0;
     }
-    connection.createChannel(function(error1, channel) {
+    connection.createChannel((error1, channel) => {
       if (error1) {
           throw error1;
       }
@@ -29,11 +29,11 @@ amqp.connect('amqp://localhost', function(error0, connection) {
   });
 });
 
-amqp.connect('amqp://localhost', function(error0, connection) {
+amqp.connect('amqp://localhost', (error0, connection) => {
   if (error0) {
       throw error0;
   }
-  connection.createChannel(function(error1, channel) {
+  connection.createChannel((error1, channel) => {
       if (error1) {
           throw error1;
       }

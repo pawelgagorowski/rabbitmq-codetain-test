@@ -32,7 +32,7 @@ amqp.connect('amqp://localhost', (error0, connection) => {
           channel.bindQueue(q.queue, exchange, bindingKey);
       });
       channel.consume(q.queue, function(msg) {
-          console.log(" [x] Echange Name: %s | Type of Exhchange: %s | Receied message: %s | from routing key: '%s' ",exchange, typeOfExchange, msg.content.toString(), msg.fields.routingKey);
+          console.log(" [x] Echange Name: %s | Type of Exchange: %s | Receied message: %s | from routing key: '%s' ",exchange, typeOfExchange, msg.content.toString(), msg.fields.routingKey);
       }, {
           noAck: true
       });
