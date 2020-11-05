@@ -23,7 +23,7 @@ amqp.connect('amqp://localhost', (error0, connection) => {
       setInterval(() => {
         routingKeys.forEach((routingKey) => {
           channel.publish(exchange, routingKey, Buffer.from(msg));
-          console.log(" [x] Echange Name: %s | type of exchange: '%s' | Sent message: %s | to routingKey: '%s'", exchange, typeOfExchange, msg, routingKey);
+          console.log(" [x] Exchange Name: %s | type of exchange: '%s' | Sent message: %s | to routingKey: '%s'", exchange, typeOfExchange, msg, routingKey);
       })
     }, 3000)
   });
