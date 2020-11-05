@@ -6,4 +6,4 @@ if (args.length == 0) {
     process.exit(1);
 }
 
-const directProducer = new RabbitConnection("directExchange", "direct", false)
+const directProducer = new RabbitConnection("directExchange", "direct", false, args)

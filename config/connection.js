@@ -1,14 +1,15 @@
 const amqp = require('amqplib/callback_api');
 
 class RabbitConnection {
-  constructor(exchange, typeOfExchange, producer) {
+  constructor(exchange, typeOfExchange, producer, args) {
     this.exchange = exchange;
     this.typeOfExchange = typeOfExchange;
     this.consumer = producer;
-    this.createConnnection();
+    this.args = args;
+    this.createConnection();
   }
 
-  createConnnection() {
+  createConnection() {
     amqp.connect('amqp://localhost', (error0, connection) => {
       if(this.consumer) {
         this.createChannelForConsumer(connection, this.exchange, this.typeOfExchange)
@@ -29,13 +30,12 @@ class RabbitConnection {
         }
         const exchange = _exchange;
         const typeOfExchange = _typeOfExchange;
-        const routingKeys = ["dupa", "info"];
         channel.assertExchange(exchange, typeOfExchange, {
             durable: false
         });
         setInterval(() => {
           if(typeOfExchange == "direct") {
-            this.publishMessageForDirect(channel, exchange, typeOfExchange, routingKeys)
+            this.publishMessageForDirect(channel, exchange, typeOfExchange)
           } else {
             this.publishMessageForFanout(channel, exchange, typeOfExchange)
           }
@@ -54,6 +54,7 @@ class RabbitConnection {
             throw error1;
         }
         const exchange = _exchange;
+        console.log("exchange", exchange)
         const typeOfExchange = _typeOfExchange;
         const bindingKeys = ["dupa", "info"];
         channel.assertExchange(exchange, typeOfExchange, {
@@ -67,7 +68,7 @@ class RabbitConnection {
           }
           console.log(' [*] Waiting for logs. To exit press CTRL+C');
           if(typeOfExchange == "direct") {
-            this.bindQueueForDirect(q, channel, bindingKeys, exchange, typeOfExchange)
+            this.bindQueueForDirect(q, channel, exchange, typeOfExchange)
           } else {
             this.bindQueueForFanout(q, channel, exchange, typeOfExchange)
           }
@@ -83,7 +84,8 @@ class RabbitConnection {
   }
 
 
-  publishMessageForDirect(channel, exchange, typeOfExchange, routingKeys) {
+  publishMessageForDirect(channel, exchange, typeOfExchange) {
+    const routingKeys = this.args;
     routingKeys.forEach((routingKey) => {
       const msg = "Hello from direct";
       channel.publish(exchange, routingKey, Buffer.from(msg));
@@ -91,7 +93,8 @@ class RabbitConnection {
     })
   }
 
-  bindQueueForDirect(q, channel, bindingKeys, exchange, typeOfExchange) {
+  bindQueueForDirect(q, channel, exchange, typeOfExchange) {
+    const bindingKeys = this.args;
     bindingKeys.forEach((bindingKey) => {
         channel.bindQueue(q.queue, exchange, bindingKey);
     });

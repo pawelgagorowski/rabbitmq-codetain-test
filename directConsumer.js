@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 const { RabbitConnection } = require("./config/connection");
 const args = process.argv.slice(2);
 
@@ -7,4 +6,4 @@ if (args.length == 0) {
     process.exit(1);
 }
 
-const directConsumer = new RabbitConnection("directExchange", "direct", true)
+const directConsumer = new RabbitConnection("directExchange", "direct", true, args)
