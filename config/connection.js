@@ -37,19 +37,10 @@ class RabbitConnection {
           if(typeOfExchange == "direct") {
             this.publishMessageForDirect(channel, exchange, typeOfExchange, routingKeys)
           } else {
-            console.log("DUPA")
+            this.publishMessageForFanout(channel, exchange, typeOfExchange)
           }
         }, 3000)
       })
-    })
-  }
-
-  publishMessageForDirect(channel, exchange, typeOfExchange, routingKeys) {
-    routingKeys.forEach((routingKey) => {
-      const msg = "Hello from direct";
-      channel.publish(exchange, routingKey, Buffer.from(msg));
-      console.log(" [x] Echange Name: %s | type of exchange: '%s' | Sent message: %s | to routingKey: '%s'", exchange, typeOfExchange, msg, routingKey);
-      console.log(" [x] Exchange Name: %s | type of exchange: '%s' | Sent message: %s | to routingKey: '%s'", exchange, typeOfExchange, msg, routingKey);
     })
   }
 
@@ -82,6 +73,21 @@ class RabbitConnection {
           }
         });
       })
+    })
+  }
+
+  publishMessageForFanout(channel, exchange, typeOfExchange) {
+    const msg = "Hello from fanout";
+    channel.publish(exchange, '', Buffer.from(msg));
+    console.log(" [x] Echange Name: %s | type of exchange: '%s' | Sent message: %s", exchange, typeOfExchange, msg);
+  }
+
+
+  publishMessageForDirect(channel, exchange, typeOfExchange, routingKeys) {
+    routingKeys.forEach((routingKey) => {
+      const msg = "Hello from direct";
+      channel.publish(exchange, routingKey, Buffer.from(msg));
+      console.log(" [x] Exchange Name: %s | type of exchange: '%s' | Sent message: %s | to routingKey: '%s'", exchange, typeOfExchange, msg, routingKey);
     })
   }
 
