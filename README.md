@@ -15,10 +15,15 @@ npm install
 ## Usage
 
 ```
-node/nodemon publisher.js [routing key 1] [routing key 2] [routing key 3]
+node/nodemon directProducer.js [routing key 1] [routing key 2] ...
 
-node/nodemon consumer.js [binding key 1] [binding key 2] [binding key 3]
+node/nodemon directConsumer.js [binding key 1] [binding key 2] ...
 
+node/nodemon fanoutProducer.js [routing key 1] [routing key 2] ...
+
+node/nodemon fanoutConsumer.js [binding key 1] [binding key 2] ...
+
+node/nodemon topicProducer.js [<facility>.<severity>] [<facility>.<severity>] ...
+
+node/nodemon fanoutConsumer.js [<facility>.<severity>] [<facility>.<severity>] ...
 ```
-
-Try to run many consumers
