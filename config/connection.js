@@ -12,7 +12,44 @@ class RabbitConnection {
     amqp.connect('amqp://localhost', (error0, connection) => {
       if(this.consumer) {
         this.createChannelForConsumer(connection, this.exchange, this.typeOfExchange)
+      } else {
+        this.createChannelForProducer(connection, this.exchange, this.typeOfExchange)
       }
+    })
+  }
+
+  createChannelForProducer(connection, _exchange, _typeOfExchange) {
+    connection.createChannel((error1, channel) => {
+      if (error1) {
+          throw error1;
+      }
+      connection.createChannel((error1, channel) => {
+        if (error1) {
+            throw error1;
+        }
+        const exchange = _exchange;
+        const typeOfExchange = _typeOfExchange;
+        const routingKeys = ["dupa", "info"];
+        channel.assertExchange(exchange, typeOfExchange, {
+            durable: false
+        });
+        setInterval(() => {
+          if(typeOfExchange == "direct") {
+            this.publishMessageForDirect(channel, exchange, typeOfExchange, routingKeys)
+          } else {
+            console.log("DUPA")
+          }
+        }, 3000)
+      })
+    })
+  }
+
+  publishMessageForDirect(channel, exchange, typeOfExchange, routingKeys) {
+    routingKeys.forEach((routingKey) => {
+      const msg = "Hello from direct";
+      channel.publish(exchange, routingKey, Buffer.from(msg));
+      console.log(" [x] Echange Name: %s | type of exchange: '%s' | Sent message: %s | to routingKey: '%s'", exchange, typeOfExchange, msg, routingKey);
+      console.log(" [x] Exchange Name: %s | type of exchange: '%s' | Sent message: %s | to routingKey: '%s'", exchange, typeOfExchange, msg, routingKey);
     })
   }
 
@@ -21,7 +58,6 @@ class RabbitConnection {
       if (error1) {
           throw error1;
       }
-      console.log("createChannelForConsumer")
       connection.createChannel((error1, channel) => {
         if (error1) {
             throw error1;
