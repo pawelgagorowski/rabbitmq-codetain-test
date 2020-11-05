@@ -34,10 +34,12 @@ class RabbitConnection {
             durable: false
         });
         setInterval(() => {
-          if(typeOfExchange == "direct") {
-            this.publishMessageForDirect(channel, exchange, typeOfExchange)
-          } else {
+          if(typeOfExchange == "direct" || typeOfExchange == "topic") {
+            this.publishMessageForDirectAndTopic(channel, exchange, typeOfExchange)
+          } else if(typeOfExchange == "fanout") {
             this.publishMessageForFanout(channel, exchange, typeOfExchange)
+          } else {
+            console.log("Wrong type of exchange")
           }
         }, 3000)
       })
@@ -68,7 +70,7 @@ class RabbitConnection {
           }
           console.log(' [*] Waiting for logs. To exit press CTRL+C');
           if(typeOfExchange == "direct") {
-            this.bindQueueForDirect(q, channel, exchange, typeOfExchange)
+            this.bindQueueForDirectAndTopic(q, channel, exchange, typeOfExchange)
           } else {
             this.bindQueueForFanout(q, channel, exchange, typeOfExchange)
           }
@@ -84,7 +86,7 @@ class RabbitConnection {
   }
 
 
-  publishMessageForDirect(channel, exchange, typeOfExchange) {
+  publishMessageForDirectAndTopic(channel, exchange, typeOfExchange) {
     const routingKeys = this.args;
     routingKeys.forEach((routingKey) => {
       const msg = "Hello from direct";
@@ -93,7 +95,7 @@ class RabbitConnection {
     })
   }
 
-  bindQueueForDirect(q, channel, exchange, typeOfExchange) {
+  bindQueueForDirectAndTopic(q, channel, exchange, typeOfExchange) {
     const bindingKeys = this.args;
     bindingKeys.forEach((bindingKey) => {
         channel.bindQueue(q.queue, exchange, bindingKey);
