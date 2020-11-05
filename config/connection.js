@@ -56,9 +56,7 @@ class RabbitConnection {
             throw error1;
         }
         const exchange = _exchange;
-        console.log("exchange", exchange)
         const typeOfExchange = _typeOfExchange;
-        const bindingKeys = ["dupa", "info"];
         channel.assertExchange(exchange, typeOfExchange, {
             durable: false
         });
@@ -69,7 +67,7 @@ class RabbitConnection {
               throw error2;
           }
           console.log(' [*] Waiting for logs. To exit press CTRL+C');
-          if(typeOfExchange == "direct") {
+          if(typeOfExchange == "direct" || typeOfExchange == "topic") {
             this.bindQueueForDirectAndTopic(q, channel, exchange, typeOfExchange)
           } else {
             this.bindQueueForFanout(q, channel, exchange, typeOfExchange)
@@ -89,7 +87,7 @@ class RabbitConnection {
   publishMessageForDirectAndTopic(channel, exchange, typeOfExchange) {
     const routingKeys = this.args;
     routingKeys.forEach((routingKey) => {
-      const msg = "Hello from direct";
+      const msg = "Hello";
       channel.publish(exchange, routingKey, Buffer.from(msg));
       console.log(" [x] Exchange Name: %s | type of exchange: '%s' | Sent message: %s | to routingKey: '%s'", exchange, typeOfExchange, msg, routingKey);
     })
@@ -101,7 +99,7 @@ class RabbitConnection {
         channel.bindQueue(q.queue, exchange, bindingKey);
     });
     channel.consume(q.queue, (msg) => {
-        console.log(" [x] Exchange Name: %s | Type of Exchange: %s | Receied message: %s | from routing key: '%s' ", exchange, typeOfExchange, msg.content.toString(), msg.fields.routingKey);
+          console.log(" [x] Exchange Name: %s | Type of Exchange: %s | Receied message: %s | from routing key: '%s' ", exchange, typeOfExchange, msg.content.toString(), msg.fields.routingKey);
     }, {
         noAck: true
       });
